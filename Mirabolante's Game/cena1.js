@@ -13,6 +13,8 @@ var stars;
 var spikes;
 var audiogema;
 var audioespinho;
+var tema;
+var temaConfig;
 var score = 0;
 var scoreText;
 var lives = 3;
@@ -30,9 +32,18 @@ cena1.preload = function () {
     this.load.image('espinho', 'espinho.png');
     this.load.audio("audiogema", "audiogema.mp3");
     this.load.audio("audioespinho", "audioespinho.mp3")
+    this.load.audio("tema", "tema.mp3")
 }
 
 cena1.create = function () {
+    tema = this.sound.add("tema");
+    var temaConfig = {
+        mute: false,
+        volume: 0.5,
+        loop: true
+    }
+    tema.play(temaConfig);
+
     audiogema = this.sound.add("audiogema");
     audioespinho = this.sound.add("audioespinho");
 
