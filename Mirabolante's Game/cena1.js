@@ -151,6 +151,7 @@ cena1.update = function () {
         this.scene.start(cena2);
         lives = 3
         score = 0
+        tema.pause(temaConfig);
     }
 }
 
