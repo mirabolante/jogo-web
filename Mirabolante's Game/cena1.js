@@ -137,14 +137,14 @@ cena1.create = function () {
 
     stars = this.physics.add.group({
         key: 'gema',
-        repeat: 0,
-        setXY: { x: 550, y: 1320, stepX: 100 },
+        repeat: 1,
+        setXY: { x: 400, y: 1320, stepX: 200 },
     });
 
     //Detecção de colisão e disparo de evento entre personagens e os itens coletáveis
     this.physics.add.collider(stars, blocos);
-    this.physics.add.overlap(player, stars, collectStar, null, this);
-    this.physics.add.overlap(player2, stars, collectStar, null, this);
+    this.physics.add.overlap(player, stars, collectStar1, null, this);
+    this.physics.add.overlap(player2, stars, collectStar2, null, this);
 
     spikes = this.physics.add.group({
         key: 'espinho',
@@ -221,11 +221,19 @@ cena1.create = function () {
 
 
 //Pontuação dos jogadores
-function collectStar(player, star) {
+function collectStar1(player, star) {
     star.disableBody(true, true);
 
     score += 10;
     scoreText.setText('Pontuação J1: ' + score);
+    audiogema.play();
+}
+
+function collectStar2(player2, star) {
+    star.disableBody(true, true);
+
+    score += 10;
+    scoreText2.setText('Pontuação J2: ' + score);
     audiogema.play();
 }
 
