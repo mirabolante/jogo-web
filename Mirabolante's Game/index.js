@@ -13,6 +13,13 @@ const config = {
             gravity: { y: 300 },
         },
     },
+    scale: {
+        mode: Phaser.Scale.FIT,
+        parent: "game",
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: 800,
+        height: 600,
+    },
     scene: [cena0, cena1, cena2],
 };
 
