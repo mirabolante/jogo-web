@@ -1,7 +1,6 @@
 tasks:
-  - init: 'echo "TODO: Replace with init/build command"'
-    command: 'echo "TODO: Replace with command to start project"'
-
+  - init: npm install
 vscode:
   extensions:
+    - eamodio.gitlens@10.2.1:WIWu3zHU4VPT8r/v866LUw==
     - esbenp.prettier-vscode@5.8.0:cd2Jz796EPVnD5zeCyctPw==
