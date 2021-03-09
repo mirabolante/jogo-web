@@ -28,6 +28,7 @@ var scoreText2;
 var lives = 3;
 var livesText;
 var livesText2;
+var jogador;
 
 // Carregar os assets
 cena1.preload = function () {
@@ -254,6 +255,67 @@ cena1.create = function () {
         },
         this
     );
+
+    // Conectar no servidor via WebSocket
+    this.socket = io();
+
+    // Disparar evento quando jogador entrar na partida
+    var self = this;
+    var physics = this.physics;
+    var cameras = this.cameras;
+
+    this.socket.on("jogadores", function (jogadores) {
+        if (jogadores.primeiro === self.socket.id) {
+            // Define jogador como o primeiro
+            jogador = 1;
+
+            // Personagens colidem com os limites da cena
+            player.setCollideWorldBounds(true);
+
+            // Detecção de colisão: plataformas
+            physics.add.collider(player, blocos, null, this);
+
+            // Detecção de colisão e disparo de evento: gemas
+            physics.add.overlap(player, stars, collectStar1, null, this);
+
+            // Detecção de colisão e disparo de evento: espinhos
+            physics.add.collider(player, spikes, hitBomb1, null, this);
+
+            // Câmera seguindo o personagem 1
+            cameras.main.startFollow(player);
+        } else if (jogadores.segundo === self.socket.id) {
+            // Define jogador como o segundo
+            jogador = 2;
+
+            // Personagens colidem com os limites da cena
+            player2.setCollideWorldBounds(true);
+
+            // Detecção de colisão: plataformas
+            physics.add.collider(player2, blocos, null, this);
+
+            // Detecção de colisão e disparo de evento: gemas
+            physics.add.overlap(player2, stars, collectStar2, null, this);
+
+            // Detecção de colisão e disparo de evento: espinhos
+            physics.add.collider(player2, spikes, hitBomb2, null, this);
+
+            // Câmera seguindo o personagem 2
+            cameras.main.startFollow(player2);
+        }
+    });
+
+    // Desenhar o outro jogador
+    this.socket.on("desenharOutroJogador", ({ frame, x, y }) => {
+        if (jogador === 1) {
+            player2.setFrame(frame);
+            player2.x = x;
+            player2.y = y;
+        } else if (jogador === 2) {
+            player.setFrame(frame);
+            player.x = x;
+            player.y = y;
+        }
+    });
 }
 
 
@@ -299,39 +361,45 @@ function hitBomb2(player2, spikes) {
 
 cena1.update = function () {
     // Controle do jogador 1: WAD
-    if (left.isDown) {
-        player.setVelocityX(-120);
-
-        player.anims.play("left", true);
-    } else if (right.isDown) {
-        player.setVelocityX(120);
-
-        player.anims.play("right", true);
-    } else {
-        player.setVelocityX(0);
-
-        player.anims.play("stopped");
-    }
-    if (up.isDown && player.body.blocked.down) {
-        player.setVelocityY(-400);
-    }
-
-    // Controle do jogador 2: direcionais
-    if (cursors.left.isDown) {
-        player2.setVelocityX(-120);
-
-        player2.anims.play("left2", true);
-    } else if (cursors.right.isDown) {
-        player2.setVelocityX(120);
-
-        player2.anims.play("right2", true);
-    } else {
-        player2.setVelocityX(0);
-
-        player2.anims.play("stopped2");
-    }
-    if (cursors.up.isDown && player2.body.blocked.down) {
-        player2.setVelocityY(-400);
+    if (jogador === 1 && player !== undefined && player2 !== undefined) {
+        if (left.isDown) {
+            player.body.setVelocityX(-120);
+            player.anims.play("left", true);
+        } else if (right.isDown) {
+            player.body.setVelocityX(120);
+            player.anims.play("right", true);
+        } else {
+            player.body.setVelocityX(0);
+            player.anims.play("stopped");
+        }
+        if (up.isDown && player.body.blocked.down) {
+            player.body.setVelocityY(-400);
+        }
+        this.socket.emit("estadoDoJogador", {
+            frame: player.anims.currentFrame.index,
+            x: player.body.x,
+            y: player.body.y,
+        });
+        // Controle do jogador 2: direcionais
+    } else if (jogador === 2 && player2 !== undefined && player !== undefined) {
+        if (cursors.left.isDown) {
+            player2.body.setVelocityX(-120);
+            player2.anims.play("left2", true);
+        } else if (cursors.right.isDown) {
+            player2.body.setVelocityX(120);
+            player2.anims.play("right2", true);
+        } else {
+            player2.body.setVelocityX(0);
+            player2.anims.play("stopped2", true);
+        }
+        if (cursors.up.isDown && player2.body.blocked.down) {
+            player2.body.setVelocityY(-400);
+        }
+        this.socket.emit("estadoDoJogador", {
+            frame: player2.anims.currentFrame.index,
+            x: player2.body.x,
+            y: player2.body.y,
+        });
     }
 
     // Se o numero de vidas chegar a zero, inicia a cena 2
