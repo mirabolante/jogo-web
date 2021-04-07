@@ -426,8 +426,7 @@ function countdown() {
     life = 0;
     tema.pause(temaConfig);
     }
-};
+} 
 
 // Exportar a cena
 export { cena1 };
-};
