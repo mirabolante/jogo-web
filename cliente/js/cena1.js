@@ -16,18 +16,21 @@ var cursors;
 var timedEvent;
 var timer;
 var timerText;
-var stars;
-var spikes;
-var audiogema;
-var audioespinho;
+var life = 0;
+var lifeText;
+var laser;
+// var stars;
+// var spikes;
+// var audiogema;
+// var audioespinho;
 var tema;
 var temaConfig;
-var score = 0;
-var scoreText;
-var scoreText2;
-var lives = 3;
-var livesText;
-var livesText2;
+// var score = 0;
+// var scoreText;
+// var scoreText2;
+// var lives = 3;
+// var livesText;
+// var livesText2;
 var jogador;
 var doisJogadores = false;
 
@@ -52,24 +55,27 @@ cena1.preload = function () {
         frameHeight: 37,
     });
 
+    // Laser
+    this.load.image("laser", "assets/laser.png");
+
     // Gema
-    this.load.image("gema", "assets/gema.png");
+    // this.load.image("gema", "assets/gema.png");
 
     // Espinho
-    this.load.image("espinho", "assets/espinho.png");
+    // this.load.image("espinho", "assets/espinho.png");
 
     // Efeitos sonoros
-    this.load.audio("audiogema", "assets/audiogema.mp3");
-    this.load.audio("audioespinho", "assets/audioespinho.mp3");
+    // this.load.audio("audiogema", "assets/audiogema.mp3");
+    // this.load.audio("audioespinho", "assets/audioespinho.mp3");
 
     // Trilha sonora
     this.load.audio("tema", "assets/tema.mp3");
 
     // Tela cheia
-    this.load.spritesheet("fullscreen", "assets/fullscreen.png", {
-        frameWidth: 40,
-        frameHeight: 40,
-    });
+    // this.load.spritesheet("fullscreen", "assets/fullscreen.png", {
+     //   frameWidth: 40,
+      //  frameHeight: 40,
+    // });
 };
 
 cena1.create = function () {
@@ -83,8 +89,8 @@ cena1.create = function () {
     tema.play(temaConfig);
 
     // Efeitos sonoros
-    audiogema = this.sound.add("audiogema");
-    audioespinho = this.sound.add("audioespinho");
+    // audiogema = this.sound.add("audiogema");
+    // audioespinho = this.sound.add("audioespinho");
 
     // Tilemap
     map = this.make.tilemap({ key: "mapa" });
@@ -100,8 +106,8 @@ cena1.create = function () {
     blocos = map.createStaticLayer("blocos", tileset0, 0, 0);
 
     // Personagens
-    player = this.physics.add.sprite(65, 1492, "personagem");
-    player2 = this.physics.add.sprite(728, 1492, "personagem2");
+    player = this.physics.add.sprite(550, 1200, "personagem");
+    player2 = this.physics.add.sprite(400, 1300, "personagem2");
 
     //   player.setBounce(0.2);
     //   player2.setBounce(0.2);
@@ -172,64 +178,80 @@ cena1.create = function () {
     // player.body.setGravityY(450);
     // player2.body.setGravityY(450);
 
+    // Localização do laser
+        laser = this.physics.add.group({
+            key: "laser",
+            repeat: 0,
+            setXY: {x:400, y:1500},
+        });
+
+    this.physics.add.collider(laser, blocos, null, null, this);
+
     // Localização das gemas
-    stars = this.physics.add.group({
-        key: "gema",
-        repeat: 1,
-        setXY: { x: 400, y: 1320, stepX: 200 },
-    });
+    // stars = this.physics.add.group({
+        // key: "gema",
+        // repeat: 1,
+        // setXY: { x: 400, y: 1320, stepX: 200 },
+    // });
 
     // Detecção de colisão e disparo de evento entre personagens e as gemas
-    this.physics.add.collider(stars, blocos, null, null, this);
+    // this.physics.add.collider(stars, blocos, null, null, this);
     // this.physics.add.overlap(player, stars, collectStar1, null, this);
     // this.physics.add.overlap(player2, stars, collectStar2, null, this);
 
     // Localização dos espinhos
-    spikes = this.physics.add.group({
-        key: "espinho",
-        repeat: 2,
-        setXY: { x: 300, y: 1460, stepX: 170 },
-    });
+    // spikes = this.physics.add.group({
+       // key: "espinho",
+       //  repeat: 2,
+       //  setXY: { x: 300, y: 1460, stepX: 170 },
+    // });
 
     // Detecção de colisão e disparo de evento entre personagens e os espinhos
-    this.physics.add.collider(spikes, blocos, null, null, this);
+    // this.physics.add.collider(spikes, blocos, null, null, this);
     //   this.physics.add.collider(player, spikes, hitBomb1, null, this);
     //   this.physics.add.collider(player2, spikes, hitBomb2, null, this);
 
     // Placar da pontuação do jogador 1
-    scoreText = this.add.text(10, 10, "Pontuação J1: 0", {
-        fontSize: "25px",
-        fill: "white",
-    });
-    scoreText.setScrollFactor(0);
+    // scoreText = this.add.text(10, 10, "Pontuação J1: 0", {
+     //   fontSize: "25px",
+     //   fill: "white",
+    // });
+    // scoreText.setScrollFactor(0);
 
     // Placar da pontuação do jogador 2
-    scoreText2 = this.add.text(550, 10, "Pontuação J2: 0", {
-        fontSize: "25px",
-        fill: "white",
-    });
-    scoreText2.setScrollFactor(0);
+    // scoreText2 = this.add.text(550, 10, "Pontuação J2: 0", {
+    //    fontSize: "25px",
+    //    fill: "white",
+    // });
+    // scoreText2.setScrollFactor(0);
 
     // Placar de vida do jogador 1
-    livesText = this.add.text(10, 40, "Vidas J1: 3", {
-        fontSize: "25px",
-        fill: "white",
-    });
-    livesText.setScrollFactor(0);
+    // livesText = this.add.text(10, 40, "Vidas J1: 3", {
+     //   fontSize: "25px",
+     //   fill: "white",
+    // });
+    // livesText.setScrollFactor(0);
 
     // Placar de vida do jogador 2
-    livesText2 = this.add.text(600, 40, "Vidas J2: 3", {
+    // livesText2 = this.add.text(600, 40, "Vidas J2: 3", {
+    //   fontSize: "25px",
+     //   fill: "white",
+    // });
+    // livesText2.setScrollFactor(0);
+
+    // Mostra na tela o contador
+    timerText = this.add.text(400, 60, timer, {
         fontSize: "25px",
         fill: "white",
     });
-    livesText2.setScrollFactor(0);
-
-    // Mostra na tela o contador
-    timerText = this.add.text(16, 16, timer, {
-        fontSize: "32px",
-        fill: "#000000",
-    });
     timerText.setScrollFactor(0);
+
+    // Mostra há quanto tempo estão jogando (a vida dos jogadores)
+    lifeText = this.add.text(400, 10, life, {
+        fontSize: "25px",
+        fill: "white",
+    });
+    lifeText.setScrollFactor(0);
 
     // Cena (800x1600) maior que a tela (800x600)
     this.cameras.main.setBounds(0, 0, 800, 1600);
@@ -245,42 +267,42 @@ cena1.create = function () {
     //   right = this.input.keyboard.addKey("D");
 
     // Botão de ativar e desativar a tela cheia
-    var button = this.add
-        .image(800 - 10, 550, "fullscreen", 0)
-        .setOrigin(1, 0)
-        .setInteractive()
-        .setScrollFactor(0);
+    // var button = this.add
+    //    .image(800 - 10, 550, "fullscreen", 0)
+    //    .setOrigin(1, 0)
+    //    .setInteractive()
+     //   .setScrollFactor(0);
 
     // Ao clicar no botão de tela cheia
-    button.on(
-        "pointerup",
-        function () {
-            if (this.scale.isFullscreen) {
-                button.setFrame(0);
-                this.scale.stopFullscreen();
-            } else {
-                button.setFrame(1);
-                this.scale.startFullscreen();
-            }
-        },
-        this
-    );
+    // button.on(
+        //"pointerup",
+        //function () {
+            //if (this.scale.isFullscreen) {
+               // button.setFrame(0);
+             //   this.scale.stopFullscreen();
+           // } else {
+             //   button.setFrame(1);
+           //     this.scale.startFullscreen();
+         //   }
+       // },
+     //   this
+    //);
 
     // Tecla "F" também ativa e desativa a tela cheia
-    var FKey = this.input.keyboard.addKey("F");
-    FKey.on(
-        "down",
-        function () {
-            if (this.scale.isFullscreen) {
-                button.setFrame(0);
-                this.scale.stopFullscreen();
-            } else {
-                button.setFrame(1);
-                this.scale.startFullscreen();
-            }
-        },
-        this
-    );
+    // var FKey = this.input.keyboard.addKey("F");
+    // FKey.on(
+       // "down",
+        // function () {
+            // if (this.scale.isFullscreen) {
+                // button.setFrame(0);
+               // this.scale.stopFullscreen();
+            //} else {
+              //  button.setFrame(1);
+              //  this.scale.startFullscreen();
+          //  }
+       // },
+       // this
+    //);
 
     // Conectar no servidor via WebSocket
     this.socket = io();
@@ -346,7 +368,7 @@ cena1.create = function () {
         console.log(jogadores);
         if (jogadores.primeiro !== undefined && jogadores.segundo !== undefined) {
             // Contagem regressiva em segundos (3.000 milissegundos)
-            timer = 60;
+            timer = 3;
             timedEvent = time.addEvent({
                 delay: 3000,
                 callback: countdown,
@@ -370,44 +392,44 @@ cena1.create = function () {
 };
 
 // Pontuação do jogador 1
-function collectStar1(player, star) {
-    star.disableBody(true, true);
+// function collectStar1(player, star) {
+    // star.disableBody(true, true);
 
-    score += 10;
-    scoreText.setText("Pontuação J1: " + score);
+    // score += 10;
+    // scoreText.setText("Pontuação J1: " + score);
     // Ao coletar a gema, toca o efeito sonoro
-    audiogema.play();
-}
+    // audiogema.play();
+// }
 
 // Pontuação do jogador 2
-function collectStar2(player2, star) {
-    star.disableBody(true, true);
+// function collectStar2(player2, star) {
+   // star.disableBody(true, true);
 
-    score += 10;
-    scoreText2.setText("Pontuação J2: " + score);
+    // score += 10;
+    // scoreText2.setText("Pontuação J2: " + score);
     // Ao coletar a gema, toca o efeito sonoro
-    audiogema.play();
-}
+    // audiogema.play();
+// }
 
 // Vida do jogador 1
-function hitBomb1(player, spikes) {
-    spikes.disableBody(false, false);
+// function hitBomb1(player, spikes) {
+    // spikes.disableBody(false, false);
 
-    lives -= 1;
-    livesText.setText("Vidas J1: " + lives);
+    // lives -= 1;
+    // livesText.setText("Vidas J1: " + lives);
     // Ao colidir com o espinho, toca o efeito sonoro
-    audioespinho.play();
-}
+   // audioespinho.play();
+// }
 
 // Vida do jogador 2
-function hitBomb2(player2, spikes) {
-    spikes.disableBody(false, false);
+// function hitBomb2(player2, spikes) {
+   // spikes.disableBody(false, false);
 
-    lives -= 1;
-    livesText2.setText("Vidas J2: " + lives);
+    // lives -= 1;
+    // livesText2.setText("Vidas J2: " + lives);
     // Ao colidir com o espinho, toca o efeito sonoro
-    audioespinho.play();
-}
+  //  audioespinho.play();
+// }
 
 cena1.update = function () {
     if (jogador === 1 && timer >= 0) {
@@ -467,8 +489,14 @@ function countdown() {
     timer -= 1;
     timerText.setText(timer);
 
-    // Se o contador chegar a zero, inicia a cena 2
     if (timer === 0) {
+    // Adiciona o tempo de vida em 1 segundo
+        life += 1;
+        lifeText.setText(life);
+    }    
+
+    // Se o contador chegar a zero, inicia a cena 2
+    else if (timer === -60) {
         tema.stop();
         this.scene.start(cena2);
     }
