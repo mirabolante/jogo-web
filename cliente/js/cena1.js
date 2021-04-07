@@ -19,18 +19,11 @@ var timerText;
 var life = 0;
 var lifeText;
 var laser;
+var audiolaser;
 // var stars;
-// var spikes;
-// var audiogema;
-// var audioespinho;
+// var audiojoia;
 var tema;
 var temaConfig;
-// var score = 0;
-// var scoreText;
-// var scoreText2;
-// var lives = 3;
-// var livesText;
-// var livesText2;
 var jogador;
 var doisJogadores = false;
 
@@ -61,12 +54,9 @@ cena1.preload = function () {
     // Gema
     // this.load.image("gema", "assets/gema.png");
 
-    // Espinho
-    // this.load.image("espinho", "assets/espinho.png");
-
     // Efeitos sonoros
-    // this.load.audio("audiogema", "assets/audiogema.mp3");
-    // this.load.audio("audioespinho", "assets/audioespinho.mp3");
+    // this.load.audio("audiojoia", "assets/audiojoia.mp3");
+    this.load.audio("audiolaser", "assets/audiolaser.mp3");
 
     // Trilha sonora
     this.load.audio("tema", "assets/tema.mp3");
@@ -89,8 +79,8 @@ cena1.create = function () {
     tema.play(temaConfig);
 
     // Efeitos sonoros
-    // audiogema = this.sound.add("audiogema");
-    // audioespinho = this.sound.add("audioespinho");
+    // audiojoia = this.sound.add("audiojoia");
+    audiolaser = this.sound.add("audiolaser");
 
     // Tilemap
     map = this.make.tilemap({ key: "mapa" });
@@ -109,18 +99,21 @@ cena1.create = function () {
     player = this.physics.add.sprite(550, 1200, "personagem");
     player2 = this.physics.add.sprite(400, 1300, "personagem2");
 
-    //   player.setBounce(0.2);
-    //   player2.setBounce(0.2);
+    // Laser, cria-se um objeto
+    laser = this.physics.add.sprite(400, 1550, "laser");
+    
+    // Remove a gravidade do laser (objeto)
+    laser.body.setAllowGravity(false);
 
     blocos.setCollisionByProperty({ collides: true });
 
     // Personagens colidem com os limites da cena
-    // player.setCollideWorldBounds(true);
-    // player2.setCollideWorldBounds(true);
+    player.setCollideWorldBounds(true);
+    player2.setCollideWorldBounds(true);
 
     // Detecção de colisão: plataformas
-    // this.physics.add.collider(player, blocos, null, null, this);
-    // this.physics.add.collider(player2, blocos, null, null, this);
+    this.physics.add.collider(player, blocos, null, null, this);
+    this.physics.add.collider(player2, blocos, null, null, this);
 
     // Animação do jogador 1 para a esquerda
     this.anims.create({
@@ -175,17 +168,10 @@ cena1.create = function () {
     });
 
     // Gravidade do jogo
-    // player.body.setGravityY(450);
-    // player2.body.setGravityY(450);
+    player.body.setGravityY(450);
+    player2.body.setGravityY(450);
 
-    // Localização do laser
-        laser = this.physics.add.group({
-            key: "laser",
-            repeat: 0,
-            setXY: {x:400, y:1500},
-        });
-
-    this.physics.add.collider(laser, blocos, null, null, this);
+    this.physics.add.collider(player, laser, hitLaser, null, this);
 
     // Localização das gemas
     // stars = this.physics.add.group({
@@ -199,54 +185,14 @@ cena1.create = function () {
     // this.physics.add.overlap(player, stars, collectStar1, null, this);
     // this.physics.add.overlap(player2, stars, collectStar2, null, this);
 
-    // Localização dos espinhos
-    // spikes = this.physics.add.group({
-       // key: "espinho",
-       //  repeat: 2,
-       //  setXY: { x: 300, y: 1460, stepX: 170 },
-    // });
-
-    // Detecção de colisão e disparo de evento entre personagens e os espinhos
-    // this.physics.add.collider(spikes, blocos, null, null, this);
-    //   this.physics.add.collider(player, spikes, hitBomb1, null, this);
-    //   this.physics.add.collider(player2, spikes, hitBomb2, null, this);
-
-    // Placar da pontuação do jogador 1
-    // scoreText = this.add.text(10, 10, "Pontuação J1: 0", {
-     //   fontSize: "25px",
-     //   fill: "white",
-    // });
-    // scoreText.setScrollFactor(0);
-
-    // Placar da pontuação do jogador 2
-    // scoreText2 = this.add.text(550, 10, "Pontuação J2: 0", {
-    //    fontSize: "25px",
-    //    fill: "white",
-    // });
-    // scoreText2.setScrollFactor(0);
-
-    // Placar de vida do jogador 1
-    // livesText = this.add.text(10, 40, "Vidas J1: 3", {
-     //   fontSize: "25px",
-     //   fill: "white",
-    // });
-    // livesText.setScrollFactor(0);
-
-    // Placar de vida do jogador 2
-    // livesText2 = this.add.text(600, 40, "Vidas J2: 3", {
-    //   fontSize: "25px",
-     //   fill: "white",
-    // });
-    // livesText2.setScrollFactor(0);
-
     // Mostra na tela o contador
-    timerText = this.add.text(400, 60, timer, {
-        fontSize: "25px",
-        fill: "white",
-    });
-    timerText.setScrollFactor(0);
+    // timerText = this.add.text(400, 60, timer, {
+       // fontSize: "25px",
+       // fill: "white",
+    // });
+    // timerText.setScrollFactor(0);
 
-    // Mostra há quanto tempo estão jogando (a vida dos jogadores)
+    // Mostra há quanto tempo estão jogando
     lifeText = this.add.text(400, 10, life, {
         fontSize: "25px",
         fill: "white",
@@ -412,7 +358,7 @@ cena1.create = function () {
 // }
 
 // Vida do jogador 1
-// function hitBomb1(player, spikes) {
+function hitLaser1(player, laser) {
     // spikes.disableBody(false, false);
 
     // lives -= 1;
@@ -422,7 +368,7 @@ cena1.create = function () {
 // }
 
 // Vida do jogador 2
-// function hitBomb2(player2, spikes) {
+function hitLaser2(player2, laser) {
    // spikes.disableBody(false, false);
 
     // lives -= 1;
@@ -485,6 +431,7 @@ cena1.update = function () {
 // }
 
 function countdown() {
+    laser.y -= 10
     // Reduz o contador em 1 segundo
     timer -= 1;
     timerText.setText(timer);
