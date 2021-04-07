@@ -341,21 +341,20 @@ cena1.create = function () {
         } else {
             doisJogadores = false;
         }
+
+        // Os dois jogadores estão conectados
+        console.log(jogadores);
+        if (jogadores.primeiro !== undefined && jogadores.segundo !== undefined) {
+            // Contagem regressiva em segundos (3.000 milissegundos)
+            timer = 60;
+            timedEvent = time.addEvent({
+                delay: 3000,
+                callback: countdown,
+                callbackScope: this,
+                loop: true,
+            });
+        }
     });
-
-    // Os dois jogadores estão conectados
-    console.log(jogadores);
-    if (jogadores.primeiro !== undefined && jogadores.segundo !== undefined) {
-        // Contagem regressiva em segundos (3.000 milissegundos)
-        timer = 60;
-        timedEvent = time.addEvent({
-            delay: 3000,
-            callback: countdown,
-            callbackScope: this,
-            loop: true,
-        });
-    }
-
     // Desenhar o outro jogador
     this.socket.on("desenharOutroJogador", ({ frame, x, y }) => {
         if (jogador === 1) {
