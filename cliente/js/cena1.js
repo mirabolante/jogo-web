@@ -72,10 +72,10 @@ cena1.preload = function () {
     this.load.audio("tema", "assets/tema.mp3");
 
     // Tela cheia
-    // this.load.spritesheet("fullscreen", "assets/fullscreen.png", {
-     //   frameWidth: 40,
-      //  frameHeight: 40,
-    // });
+    this.load.spritesheet("fullscreen", "assets/fullscreen.png", {
+       frameWidth: 40,
+       frameHeight: 40,
+    });
 };
 
 cena1.create = function () {
@@ -260,49 +260,49 @@ cena1.create = function () {
     // A câmera segue o jogador 1
     //   this.cameras.main.startFollow(player, true, 0.5, 0.5);
 
-    // Direcionais do teclado
-    cursors = this.input.keyboard.createCursorKeys();
-    //   up = this.input.keyboard.addKey("W");
-    //   left = this.input.keyboard.addKey("A");
-    //   right = this.input.keyboard.addKey("D");
+  // Direcionais do teclado
+  cursors = this.input.keyboard.createCursorKeys();
+  //   up = this.input.keyboard.addKey("W");
+  //   left = this.input.keyboard.addKey("A");
+  //   right = this.input.keyboard.addKey("D");
 
-    // Botão de ativar e desativar a tela cheia
-    // var button = this.add
-    //    .image(800 - 10, 550, "fullscreen", 0)
-    //    .setOrigin(1, 0)
-    //    .setInteractive()
-     //   .setScrollFactor(0);
+  // Botão de ativar e desativar a tela cheia
+  var button = this.add
+    .image(800 - 5, 555, "fullscreen", 0)
+    .setOrigin(1, 0)
+    .setInteractive()
+    .setScrollFactor(0);
 
-    // Ao clicar no botão de tela cheia
-    // button.on(
-        //"pointerup",
-        //function () {
-            //if (this.scale.isFullscreen) {
-               // button.setFrame(0);
-             //   this.scale.stopFullscreen();
-           // } else {
-             //   button.setFrame(1);
-           //     this.scale.startFullscreen();
-         //   }
-       // },
-     //   this
-    //);
+  // Ao clicar no botão de tela cheia
+  button.on(
+    "pointerup",
+    function () {
+      if (this.scale.isFullscreen) {
+        button.setFrame(0);
+        this.scale.stopFullscreen();
+      } else {
+        button.setFrame(1);
+        this.scale.startFullscreen();
+      }
+    },
+    this
+  );
 
-    // Tecla "F" também ativa e desativa a tela cheia
-    // var FKey = this.input.keyboard.addKey("F");
-    // FKey.on(
-       // "down",
-        // function () {
-            // if (this.scale.isFullscreen) {
-                // button.setFrame(0);
-               // this.scale.stopFullscreen();
-            //} else {
-              //  button.setFrame(1);
-              //  this.scale.startFullscreen();
-          //  }
-       // },
-       // this
-    //);
+  // Tecla "F" também ativa e desativa a tela cheia
+  var FKey = this.input.keyboard.addKey("F");
+  FKey.on(
+    "down",
+    function () {
+      if (this.scale.isFullscreen) {
+        button.setFrame(0);
+        this.scale.stopFullscreen();
+      } else {
+        button.setFrame(1);
+        this.scale.startFullscreen();
+      }
+    },
+    this
+  );
 
     // Conectar no servidor via WebSocket
     this.socket = io();
