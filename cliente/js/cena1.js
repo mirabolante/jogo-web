@@ -15,14 +15,14 @@ var player2;
 var cursors;
 var timedEvent;
 var timer;
-var timerText;
+// var timerText;
 var life = 0;
 var lifeText;
 var laser;
 // var stars;
 // var spikes;
 // var audiogema;
-// var audioespinho;
+var audiolaser;
 var tema;
 var temaConfig;
 // var score = 0;
@@ -66,15 +66,15 @@ cena1.preload = function () {
 
     // Efeitos sonoros
     // this.load.audio("audiogema", "assets/audiogema.mp3");
-    // this.load.audio("audioespinho", "assets/audioespinho.mp3");
+    this.load.audio("audiolaser", "assets/audiolaser.mp3");
 
     // Trilha sonora
     this.load.audio("tema", "assets/tema.mp3");
 
     // Tela cheia
     this.load.spritesheet("fullscreen", "assets/fullscreen.png", {
-       frameWidth: 40,
-       frameHeight: 40,
+        frameWidth: 40,
+        frameHeight: 40,
     });
 };
 
@@ -90,7 +90,7 @@ cena1.create = function () {
 
     // Efeitos sonoros
     // audiogema = this.sound.add("audiogema");
-    // audioespinho = this.sound.add("audioespinho");
+    audiolaser = this.sound.add("audiolaser");
 
     // Tilemap
     map = this.make.tilemap({ key: "mapa" });
@@ -109,9 +109,13 @@ cena1.create = function () {
     player = this.physics.add.sprite(550, 1200, "personagem");
     player2 = this.physics.add.sprite(400, 1300, "personagem2");
 
+    // Remove (inicialmente) a gravidade dos jogadores
+    player.body.setAllowGravity(false);
+    player2.body.setAllowGravity(false);
+
     // Laser, cria-se um objeto
     laser = this.physics.add.sprite(400, 1550, "laser");
-    
+
     // Remove a gravidade do laser (objeto)
     laser.body.setAllowGravity(false);
 
@@ -177,17 +181,14 @@ cena1.create = function () {
         // frameRate: 20,
     });
 
-    // Gravidade do jogo
-    player.body.setGravityY(450);
-    player2.body.setGravityY(450);
-
-    this.physics.add.collider(player, laser, null, null, this);
+    this.physics.add.collider(player, laser, hitLaser, null, this);
+    this.physics.add.collider(player2, laser, hitLaser, null, this);
 
     // Localização das gemas
     // stars = this.physics.add.group({
-        // key: "gema",
-        // repeat: 1,
-        // setXY: { x: 400, y: 1320, stepX: 200 },
+    // key: "gema",
+    // repeat: 1,
+    // setXY: { x: 400, y: 1320, stepX: 200 },
     // });
 
     // Detecção de colisão e disparo de evento entre personagens e as gemas
@@ -197,9 +198,9 @@ cena1.create = function () {
 
     // Localização dos espinhos
     // spikes = this.physics.add.group({
-       // key: "espinho",
-       //  repeat: 2,
-       //  setXY: { x: 300, y: 1460, stepX: 170 },
+    // key: "espinho",
+    //  repeat: 2,
+    //  setXY: { x: 300, y: 1460, stepX: 170 },
     // });
 
     // Detecção de colisão e disparo de evento entre personagens e os espinhos
@@ -209,8 +210,8 @@ cena1.create = function () {
 
     // Placar da pontuação do jogador 1
     // scoreText = this.add.text(10, 10, "Pontuação J1: 0", {
-     //   fontSize: "25px",
-     //   fill: "white",
+    //   fontSize: "25px",
+    //   fill: "white",
     // });
     // scoreText.setScrollFactor(0);
 
@@ -223,24 +224,24 @@ cena1.create = function () {
 
     // Placar de vida do jogador 1
     // livesText = this.add.text(10, 40, "Vidas J1: 3", {
-     //   fontSize: "25px",
-     //   fill: "white",
+    //   fontSize: "25px",
+    //   fill: "white",
     // });
     // livesText.setScrollFactor(0);
 
     // Placar de vida do jogador 2
     // livesText2 = this.add.text(600, 40, "Vidas J2: 3", {
     //   fontSize: "25px",
-     //   fill: "white",
+    //   fill: "white",
     // });
     // livesText2.setScrollFactor(0);
 
-    // Mostra na tela o contador
-    timerText = this.add.text(400, 60, timer, {
-        fontSize: "25px",
-        fill: "white",
-    });
-    timerText.setScrollFactor(0);
+    // Mostra na tela o contador, que começa em 60 (segundos)
+    // timerText = this.add.text(400, 60, timer, {
+    // fontSize: "25px",
+    // fill: "white",
+    // });
+    // timerText.setScrollFactor(0);
 
     // Mostra há quanto tempo estão jogando (a vida dos jogadores)
     lifeText = this.add.text(400, 10, life, {
@@ -256,49 +257,49 @@ cena1.create = function () {
     // A câmera segue o jogador 1
     //   this.cameras.main.startFollow(player, true, 0.5, 0.5);
 
-  // Direcionais do teclado
-  cursors = this.input.keyboard.createCursorKeys();
-  //   up = this.input.keyboard.addKey("W");
-  //   left = this.input.keyboard.addKey("A");
-  //   right = this.input.keyboard.addKey("D");
+    // Direcionais do teclado
+    cursors = this.input.keyboard.createCursorKeys();
+    //   up = this.input.keyboard.addKey("W");
+    //   left = this.input.keyboard.addKey("A");
+    //   right = this.input.keyboard.addKey("D");
 
-  // Botão de ativar e desativar a tela cheia
-  var button = this.add
-    .image(800 - 5, 555, "fullscreen", 0)
-    .setOrigin(1, 0)
-    .setInteractive()
-    .setScrollFactor(0);
+    // Botão de ativar e desativar a tela cheia
+    var button = this.add
+        .image(800 - 5, 555, "fullscreen", 0)
+        .setOrigin(1, 0)
+        .setInteractive()
+        .setScrollFactor(0);
 
-  // Ao clicar no botão de tela cheia
-  button.on(
-    "pointerup",
-    function () {
-      if (this.scale.isFullscreen) {
-        button.setFrame(0);
-        this.scale.stopFullscreen();
-      } else {
-        button.setFrame(1);
-        this.scale.startFullscreen();
-      }
-    },
-    this
-  );
+    // Ao clicar no botão de tela cheia
+    button.on(
+        "pointerup",
+        function () {
+            if (this.scale.isFullscreen) {
+                button.setFrame(0);
+                this.scale.stopFullscreen();
+            } else {
+                button.setFrame(1);
+                this.scale.startFullscreen();
+            }
+        },
+        this
+    );
 
-  // Tecla "F" também ativa e desativa a tela cheia
-  var FKey = this.input.keyboard.addKey("F");
-  FKey.on(
-    "down",
-    function () {
-      if (this.scale.isFullscreen) {
-        button.setFrame(0);
-        this.scale.stopFullscreen();
-      } else {
-        button.setFrame(1);
-        this.scale.startFullscreen();
-      }
-    },
-    this
-  );
+    // Tecla "F" também ativa e desativa a tela cheia
+    var FKey = this.input.keyboard.addKey("F");
+    FKey.on(
+        "down",
+        function () {
+            if (this.scale.isFullscreen) {
+                button.setFrame(0);
+                this.scale.stopFullscreen();
+            } else {
+                button.setFrame(1);
+                this.scale.startFullscreen();
+            }
+        },
+        this
+    );
 
     // Conectar no servidor via WebSocket
     this.socket = io();
@@ -312,7 +313,6 @@ cena1.create = function () {
 
     this.socket.on("jogadores", function (jogadores) {
         if (jogadores.primeiro !== undefined && jogadores.segundo !== undefined) {
-            doisJogadores = true;
             if (jogadores.primeiro === self.socket.id) {
                 // Define jogador como o primeiro
                 jogador = 1;
@@ -332,8 +332,8 @@ cena1.create = function () {
                 // Câmera seguindo o personagem 1
                 cameras.main.startFollow(player);
 
-                // Remove a gravidade do oponente
-                player2.body.setAllowGravity(false);
+                // Ativa a gravidade do jogador
+                player.body.setAllowGravity(true);
             } else if (jogadores.segundo === self.socket.id) {
                 // Define jogador como o segundo
                 jogador = 2;
@@ -353,9 +353,10 @@ cena1.create = function () {
                 // Câmera seguindo o personagem 2
                 cameras.main.startFollow(player2);
 
-                // Remove a gravidade do oponente
-                player.body.setAllowGravity(false);
+                // Ativa a gravidade do jogador
+                player2.body.setAllowGravity(true);
             }
+            doisJogadores = true;
         } else {
             doisJogadores = false;
         }
@@ -363,16 +364,16 @@ cena1.create = function () {
         // Os dois jogadores estão conectados
         console.log(jogadores);
         if (jogadores.primeiro !== undefined && jogadores.segundo !== undefined) {
-            // Contagem regressiva em segundos (3.000 milissegundos)
-            timer = 3;
+            timer = 60;
             timedEvent = time.addEvent({
-                delay: 3000,
+                delay: 1000,
                 callback: countdown,
                 callbackScope: this,
                 loop: true,
             });
         }
     });
+
     // Desenhar o outro jogador
     this.socket.on("desenharOutroJogador", ({ frame, x, y }) => {
         if (jogador === 1) {
@@ -389,47 +390,46 @@ cena1.create = function () {
 
 // Pontuação do jogador 1
 // function collectStar1(player, star) {
-    // star.disableBody(true, true);
+// star.disableBody(true, true);
 
-    // score += 10;
-    // scoreText.setText("Pontuação J1: " + score);
-    // Ao coletar a gema, toca o efeito sonoro
-    // audiogema.play();
+// score += 10;
+// scoreText.setText("Pontuação J1: " + score);
+// Ao coletar a gema, toca o efeito sonoro
+// audiogema.play();
 // }
 
 // Pontuação do jogador 2
 // function collectStar2(player2, star) {
-   // star.disableBody(true, true);
+// star.disableBody(true, true);
 
-    // score += 10;
-    // scoreText2.setText("Pontuação J2: " + score);
-    // Ao coletar a gema, toca o efeito sonoro
-    // audiogema.play();
+// score += 10;
+// scoreText2.setText("Pontuação J2: " + score);
+// Ao coletar a gema, toca o efeito sonoro
+// audiogema.play();
 // }
 
 // Vida do jogador 1
 // function hitBomb1(player, spikes) {
-    // spikes.disableBody(false, false);
+// spikes.disableBody(false, false);
 
-    // lives -= 1;
-    // livesText.setText("Vidas J1: " + lives);
-    // Ao colidir com o espinho, toca o efeito sonoro
-   // audioespinho.play();
+// lives -= 1;
+// livesText.setText("Vidas J1: " + lives);
+// Ao colidir com o espinho, toca o efeito sonoro
+// audioespinho.play();
 // }
 
 // Vida do jogador 2
 // function hitBomb2(player2, spikes) {
-   // spikes.disableBody(false, false);
+// spikes.disableBody(false, false);
 
-    // lives -= 1;
-    // livesText2.setText("Vidas J2: " + lives);
-    // Ao colidir com o espinho, toca o efeito sonoro
-  //  audioespinho.play();
+// lives -= 1;
+// livesText2.setText("Vidas J2: " + lives);
+// Ao colidir com o espinho, toca o efeito sonoro
+//  audioespinho.play();
 // }
 
 cena1.update = function () {
-    if (jogador === 1 && timer >= 0) {
-        // if (jogador === 1 && doisJogadores === true) {
+    if (jogador === 1 && doisJogadores === true) {
         if (cursors.left.isDown) {
             player.body.setVelocityX(-120);
             player.anims.play("left", true);
@@ -440,15 +440,17 @@ cena1.update = function () {
             player.body.setVelocityX(0);
             player.anims.play("stopped", true);
         }
+
         if (cursors.up.isDown && player.body.blocked.down) {
             player.body.setVelocityY(-400);
         }
+
         this.socket.emit("estadoDoJogador", {
             frame: player.anims.currentFrame.index,
             x: player.body.x + 15,
             y: player.body.y + 18,
         });
-    } else if (jogador === 2 && timer >= 0) {
+    } else if (jogador === 2 && doisJogadores === true) {
         if (cursors.left.isDown) {
             player2.body.setVelocityX(-120);
             player2.anims.play("left2", true);
@@ -461,9 +463,11 @@ cena1.update = function () {
             player2.body.setVelocityX(0);
             player2.anims.play("stopped2", true);
         }
+
         if (cursors.up.isDown && player2.body.blocked.down) {
             player2.body.setVelocityY(-400);
         }
+
         this.socket.emit("estadoDoJogador", {
             frame: player2.anims.currentFrame.index,
             x: player2.body.x + 15,
@@ -481,23 +485,31 @@ cena1.update = function () {
 // }
 
 function countdown() {
-    laser.y -= 30
+    // O laser sobre 30 pixels no eixo Y
+    laser.y -= 30;
+
     // Reduz o contador em 1 segundo
     timer -= 1;
-    timerText.setText(timer);
+    // timerText.setText(timer);
 
-    if (timer === 0) {
     // Adiciona o tempo de vida em 1 segundo
-        life += 1;
-        lifeText.setText(life);
-    }    
+    life += 1;
+    lifeText.setText(life);
 
     // Se o contador chegar a zero, inicia a cena 2
-    else if (timer === -60) {
-        tema.stop();
-        this.scene.start(cena2);
-    }
-};
+    //if (timer === 0) {
+    //tema.stop();
+    //this.scene.start(cena2);
+    //}
+}
+
+function hitLaser(player, laser) {
+    audiolaser.play();
+    tema.stop();
+    player.setTint(0xff0000);
+    //this.scene.start(cena2);
+    this.scene.pause();
+}
 
 // Exportar a cena
 export { cena1 };
