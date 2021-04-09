@@ -34,7 +34,7 @@ var temaConfig;
 var jogador;
 var doisJogadores = false;
 var ice_servers = {
-    iceServers: [{ url: "stun:stun.l.google.com:19302" }],
+    iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
 };
 var localConnection;
 var remoteConnection;
@@ -579,8 +579,8 @@ function hitLaser(player, laser) {
     audiolaser.play();
     tema.stop();
     player.setTint(0xff0000);
-    //this.scene.start(cena2);
-    this.scene.pause();
+    this.scene.start(cena2);
+    //this.scene.pause();
 }
 
 // Exportar a cena
