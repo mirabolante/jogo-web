@@ -33,6 +33,13 @@ var temaConfig;
 // var livesText2;
 var jogador;
 var doisJogadores = false;
+var ice_servers = {
+    iceServers: [{ url: "stun:stun.l.google.com:19302" }],
+};
+var localConnection;
+var remoteConnection;
+var midias;
+const audio = document.querySelector("audio");
 
 // Carregar os assets
 cena1.preload = function () {
@@ -334,6 +341,13 @@ cena1.create = function () {
 
                 // Ativa a gravidade do jogador
                 player.body.setAllowGravity(true);
+
+                navigator.mediaDevices
+                    .getUserMedia({ video: false, audio: true })
+                    .then((stream) => {
+                        midias = stream;
+                    })
+                    .catch((error) => console.log(error));
             } else if (jogadores.segundo === self.socket.id) {
                 // Define jogador como o segundo
                 jogador = 2;
@@ -355,6 +369,35 @@ cena1.create = function () {
 
                 // Ativa a gravidade do jogador
                 player2.body.setAllowGravity(true);
+
+                navigator.mediaDevices
+                    .getUserMedia({ video: false, audio: true })
+                    .then((stream) => {
+                        midias = stream;
+                        localConnection = new RTCPeerConnection(ice_servers);
+                        midias
+                            .getTracks()
+                            .forEach((track) => localConnection.addTrack(track, midias));
+                        localConnection.onicecandidate = ({ candidate }) => {
+                            candidate &&
+                                socket.emit("candidate", jogadores.primeiro, candidate);
+                        };
+                        console.log(midias);
+                        localConnection.ontrack = ({ streams: [midias] }) => {
+                            audio.srcObject = midias;
+                        };
+                        localConnection
+                            .createOffer()
+                            .then((offer) => localConnection.setLocalDescription(offer))
+                            .then(() => {
+                                socket.emit(
+                                    "offer",
+                                    jogadores.primeiro,
+                                    localConnection.localDescription
+                                );
+                            });
+                    })
+                    .catch((error) => console.log(error));
             }
             doisJogadores = true;
         } else {
@@ -372,6 +415,35 @@ cena1.create = function () {
                 loop: true,
             });
         }
+    });
+
+    this.socket.on("offer", (socketId, description) => {
+        remoteConnection = new RTCPeerConnection(ice_servers);
+        midias
+            .getTracks()
+            .forEach((track) => remoteConnection.addTrack(track, midias));
+        remoteConnection.onicecandidate = ({ candidate }) => {
+            candidate && socket.emit("candidate", socketId, candidate);
+        };
+        remoteConnection.ontrack = ({ streams: [midias] }) => {
+            audio.srcObject = midias;
+        };
+        remoteConnection
+            .setRemoteDescription(description)
+            .then(() => remoteConnection.createAnswer())
+            .then((answer) => remoteConnection.setLocalDescription(answer))
+            .then(() => {
+                socket.emit("answer", socketId, remoteConnection.localDescription);
+            });
+    });
+
+    socket.on("answer", (description) => {
+        localConnection.setRemoteDescription(description);
+    });
+
+    socket.on("candidate", (candidate) => {
+        const conn = localConnection || remoteConnection;
+        conn.addIceCandidate(new RTCIceCandidate(candidate));
     });
 
     // Desenhar o outro jogador
