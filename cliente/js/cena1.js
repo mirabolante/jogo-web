@@ -391,13 +391,12 @@ cena1.create = function () {
 
             cima.on("pointerover", () => {
                 cima.setFrame(1);
-                player.setVelocityX(-400);
-                player.anims.play("stopped", true);
+                if (player.body.blocked.down) {
+                    player.setVelocityY(-330);
+                }
             });
             cima.on("pointerout", () => {
                 cima.setFrame(0);
-                player.setVelocityX(0);
-                player.anims.play("stopped", true);
             });
 
             // Personagens colidem com os limites da cena
@@ -453,13 +452,12 @@ cena1.create = function () {
 
             cima.on("pointerover", () => {
                 cima.setFrame(1);
-                player2.setVelocityX(-400);
-                player2.anims.play("stopped2", true);
+                if (player2.body.blocked.down) {
+                    player2.setVelocityY(-330);
+                }
             });
             cima.on("pointerout", () => {
                 cima.setFrame(0);
-                player2.setVelocityX(0);
-                player2.anims.play("stopped2", true);
             });
 
             // Personagens colidem com os limites da cena
