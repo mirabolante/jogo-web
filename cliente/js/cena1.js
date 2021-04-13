@@ -608,13 +608,25 @@ cena1.create = function () {
 cena1.update = function () {
     if (jogador === 1 && doisJogadores === true) {
         this.socket.emit("estadoDoJogador", {
-            frame: player.anims.currentFrame.index,
+            frame: () => {
+                try {
+                    player.anims.currentFrame.index;
+                } catch (e) {
+                    return 0;
+                }
+            },
             x: player.body.x + 15,
             y: player.body.y + 18,
         });
     } else if (jogador === 2 && doisJogadores === true) {
         this.socket.emit("estadoDoJogador", {
-            frame: player2.anims.currentFrame.index,
+            frame: () => {
+                try {
+                    player2.anims.currentFrame.index;
+                } catch (e) {
+                    return 0;
+                }
+            },
             x: player2.body.x + 15,
             y: player2.body.y + 18,
         });
