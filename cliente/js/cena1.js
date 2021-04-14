@@ -1,5 +1,6 @@
 // Importar a próxima cena
 import { cena2 } from "./cena2.js";
+import { cena3 } from "./cena3.js";
 
 // Criar a cena 1
 var cena1 = new Phaser.Scene("Cena 1");
@@ -22,9 +23,9 @@ var timer;
 var life = 0;
 var lifeText;
 var laser;
-// var stars;
+var estrela;
 // var spikes;
-// var audiogema;
+var audioestrela;
 var audiolaser;
 var tema;
 var temaConfig;
@@ -68,14 +69,14 @@ cena1.preload = function () {
     // Laser
     this.load.image("laser", "assets/laser.png");
 
-    // Gema
-    // this.load.image("gema", "assets/gema.png");
+    // Estrela
+    this.load.image("estrela", "assets/estrela.png");
 
     // Espinho
     // this.load.image("espinho", "assets/espinho.png");
 
     // Efeitos sonoros
-    // this.load.audio("audiogema", "assets/audiogema.mp3");
+    this.load.audio("audioestrela", "assets/audioestrela.mp3");
     this.load.audio("audiolaser", "assets/audiolaser.mp3");
 
     // Trilha sonora
@@ -113,7 +114,7 @@ cena1.create = function () {
     tema.play(temaConfig);
 
     // Efeitos sonoros
-    // audiogema = this.sound.add("audiogema");
+    audioestrela = this.sound.add("audioestrela");
     audiolaser = this.sound.add("audiolaser");
 
     // Tilemap
@@ -142,6 +143,12 @@ cena1.create = function () {
 
     // Remove a gravidade do laser (objeto)
     laser.body.setAllowGravity(false);
+
+    // Estrela, cria-se um objeto
+    estrela = this.physics.add.sprite(645, 40, "estrela");
+
+    // Remove a gravidade da estrela (objeto)
+    estrela.body.setAllowGravity(false);
 
     blocos.setCollisionByProperty({ collides: true });
 
@@ -232,6 +239,9 @@ cena1.create = function () {
 
     this.physics.add.collider(player, laser, hitLaser, null, this);
     this.physics.add.collider(player2, laser, hitLaser, null, this);
+
+    this.physics.add.collider(player, estrela, hitEstrela, null, this);
+    this.physics.add.collider(player2, estrela, hitEstrela, null, this);
 
     // Localização das gemas
     // stars = this.physics.add.group({
@@ -644,7 +654,7 @@ cena1.update = function () {
 
 function countdown() {
     // O laser sobre 30 pixels no eixo Y
-    laser.y -= 30;
+    //laser.y -= 30;
 
     // Reduz o contador em 1 segundo
     timer -= 1;
@@ -659,6 +669,14 @@ function countdown() {
     //tema.stop();
     //this.scene.start(cena2);
     //}
+}
+
+function hitEstrela(player, estrela) {
+    audioestrela.play();
+    tema.stop();
+    player.setTint(0xff0000);
+    this.scene.start(cena3);
+    //this.scene.pause();
 }
 
 function hitLaser(player, laser) {

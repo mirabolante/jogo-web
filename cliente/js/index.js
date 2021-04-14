@@ -2,6 +2,7 @@
 import { cena0 } from "./cena0.js";
 import { cena1 } from "./cena1.js";
 import { cena2 } from "./cena2.js";
+import { cena3 } from "./cena3.js";
 
 // Configuração do jogo
 const config = {
