@@ -89,16 +89,16 @@ cena1.preload = function () {
 
     // Toque na tela
     this.load.spritesheet("esquerda", "assets/esquerda.png", {
-        frameWidth: 40,
-        frameHeight: 40
+        frameWidth: 64,
+        frameHeight: 64
     });
     this.load.spritesheet("direita", "assets/direita.png", {
-        frameWidth: 40,
-        frameHeight: 40
+        frameWidth: 64,
+        frameHeight: 64
     });
     this.load.spritesheet("cima", "assets/cima.png", {
-        frameWidth: 40,
-        frameHeight: 40
+        frameWidth: 64,
+        frameHeight: 64
     });
 };
 
@@ -216,17 +216,17 @@ cena1.create = function () {
     // Controle direcional por toque na tela
 
     var esquerda = this.add
-        .image(676, 500, "esquerda", 0)
+        .image(660, 550, "esquerda", 0)
         .setInteractive()
         .setScrollFactor(0);
 
     var direita = this.add
-        .image(750, 500, "direita", 0)
+        .image(750, 550, "direita", 0)
         .setInteractive()
         .setScrollFactor(0);
 
     var cima = this.add
-        .image(50, 500, "cima", 0)
+        .image(50, 550, "cima", 0)
         .setInteractive()
         .setScrollFactor(0);
 
