@@ -1,7 +1,7 @@
 // Importar a próxima cena
 import { cena1 } from "./cena1.js";
 
-// Criar a cena 2
+// Criar a cena 3
 var cena3 = new Phaser.Scene("Cena 3");
 
 // Carregar a imagem de fundo

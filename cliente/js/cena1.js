@@ -674,9 +674,7 @@ function countdown() {
 function hitEstrela(player, estrela) {
     audioestrela.play();
     tema.stop();
-    player.setTint(0xff0000);
     this.scene.start(cena3);
-    //this.scene.pause();
 }
 
 function hitLaser(player, laser) {
@@ -684,7 +682,6 @@ function hitLaser(player, laser) {
     tema.stop();
     player.setTint(0xff0000);
     this.scene.start(cena2);
-    //this.scene.pause();
 }
 
 // Exportar a cena
