@@ -495,8 +495,8 @@ cena1.update = function () {
 };
 
 function countdown() {
-    // O laser sobre 10 pixels no eixo Y
-    laser.y -= 10;
+    // O laser sobre 15 pixels no eixo Y
+    laser.y -= 15;
 
     // Reduz o contador em 1 segundo
     timer -= 1;
