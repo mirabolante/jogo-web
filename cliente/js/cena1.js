@@ -19,22 +19,14 @@ var touchX;
 var touchY;
 var timedEvent;
 var timer;
-// var timerText;
 var life = 0;
 var lifeText;
 var laser;
 var estrela;
-// var spikes;
 var audioestrela;
 var audiolaser;
 var tema;
 var temaConfig;
-// var score = 0;
-// var scoreText;
-// var scoreText2;
-// var lives = 3;
-// var livesText;
-// var livesText2;
 var jogador;
 var doisJogadores = false;
 var ice_servers = {
@@ -72,9 +64,6 @@ cena1.preload = function () {
     // Estrela
     this.load.image("estrela", "assets/estrela.png");
 
-    // Espinho
-    // this.load.image("espinho", "assets/espinho.png");
-
     // Efeitos sonoros
     this.load.audio("audioestrela", "assets/audioestrela.mp3");
     this.load.audio("audiolaser", "assets/audiolaser.mp3");
@@ -108,7 +97,7 @@ cena1.create = function () {
     tema = this.sound.add("tema");
     var temaConfig = {
         mute: false,
-        volume: 0.5,
+        volume: 0.1,
         loop: true,
     };
     tema.play(temaConfig);
@@ -131,8 +120,8 @@ cena1.create = function () {
     blocos = map.createStaticLayer("blocos", tileset0, 0, 0);
 
     // Personagens
-    player = this.physics.add.sprite(550, 1200, "personagem");
-    player2 = this.physics.add.sprite(400, 1300, "personagem2");
+    player = this.physics.add.sprite(313, 1430, "personagem");
+    player2 = this.physics.add.sprite(490, 1430, "personagem2");
 
     // Remove (inicialmente) a gravidade dos jogadores
     player.body.setAllowGravity(false);
@@ -216,12 +205,8 @@ cena1.create = function () {
     cursors = this.input.keyboard.createCursorKeys();
     // Touch
     pointer = this.input.addPointer(1);
-    //   up = this.input.keyboard.addKey("W");
-    //   left = this.input.keyboard.addKey("A");
-    //   right = this.input.keyboard.addKey("D");
 
     // Controle direcional por toque na tela
-
     var esquerda = this.add
         .image(660, 550, "esquerda", 0)
         .setInteractive()
@@ -243,65 +228,6 @@ cena1.create = function () {
     this.physics.add.collider(player, estrela, hitEstrela, null, this);
     this.physics.add.collider(player2, estrela, hitEstrela, null, this);
 
-    // Localização das gemas
-    // stars = this.physics.add.group({
-    // key: "gema",
-    // repeat: 1,
-    // setXY: { x: 400, y: 1320, stepX: 200 },
-    // });
-
-    // Detecção de colisão e disparo de evento entre personagens e as gemas
-    // this.physics.add.collider(stars, blocos, null, null, this);
-    // this.physics.add.overlap(player, stars, collectStar1, null, this);
-    // this.physics.add.overlap(player2, stars, collectStar2, null, this);
-
-    // Localização dos espinhos
-    // spikes = this.physics.add.group({
-    // key: "espinho",
-    //  repeat: 2,
-    //  setXY: { x: 300, y: 1460, stepX: 170 },
-    // });
-
-    // Detecção de colisão e disparo de evento entre personagens e os espinhos
-    // this.physics.add.collider(spikes, blocos, null, null, this);
-    //   this.physics.add.collider(player, spikes, hitBomb1, null, this);
-    //   this.physics.add.collider(player2, spikes, hitBomb2, null, this);
-
-    // Placar da pontuação do jogador 1
-    // scoreText = this.add.text(10, 10, "Pontuação J1: 0", {
-    //   fontSize: "25px",
-    //   fill: "white",
-    // });
-    // scoreText.setScrollFactor(0);
-
-    // Placar da pontuação do jogador 2
-    // scoreText2 = this.add.text(550, 10, "Pontuação J2: 0", {
-    //    fontSize: "25px",
-    //    fill: "white",
-    // });
-    // scoreText2.setScrollFactor(0);
-
-    // Placar de vida do jogador 1
-    // livesText = this.add.text(10, 40, "Vidas J1: 3", {
-    //   fontSize: "25px",
-    //   fill: "white",
-    // });
-    // livesText.setScrollFactor(0);
-
-    // Placar de vida do jogador 2
-    // livesText2 = this.add.text(600, 40, "Vidas J2: 3", {
-    //   fontSize: "25px",
-    //   fill: "white",
-    // });
-    // livesText2.setScrollFactor(0);
-
-    // Mostra na tela o contador, que começa em 60 (segundos)
-    // timerText = this.add.text(400, 60, timer, {
-    // fontSize: "25px",
-    // fill: "white",
-    // });
-    // timerText.setScrollFactor(0);
-
     // Mostra há quanto tempo estão jogando (a vida dos jogadores)
     lifeText = this.add.text(400, 10, life, {
         fontSize: "25px",
@@ -312,17 +238,6 @@ cena1.create = function () {
     // Cena (800x1600) maior que a tela (800x600)
     this.cameras.main.setBounds(0, 0, 800, 1600);
     this.physics.world.setBounds(0, 0, 800, 1600);
-
-    // A câmera segue o jogador 1
-    //   this.cameras.main.startFollow(player, true, 0.5, 0.5);
-
-    // Direcionais do teclado
-    // cursors = this.input.keyboard.createCursorKeys();
-    // Touch
-    // pointer = this.input.addPointer(1);
-    //   up = this.input.keyboard.addKey("W");
-    //   left = this.input.keyboard.addKey("A");
-    //   right = this.input.keyboard.addKey("D");
 
     // Botão de ativar e desativar a tela cheia
     var button = this.add
@@ -402,24 +317,12 @@ cena1.create = function () {
             cima.on("pointerover", () => {
                 cima.setFrame(1);
                 if (player.body.blocked.down) {
-                    player.setVelocityY(-330);
+                    player.setVelocityY(-260);
                 }
             });
             cima.on("pointerout", () => {
                 cima.setFrame(0);
             });
-
-            // Personagens colidem com os limites da cena
-            // player.setCollideWorldBounds(true);
-
-            // Detecção de colisão: plataformas
-            // physics.add.collider(player, blocos, null, null, this);
-
-            // Detecção de colisão e disparo de evento: gemas
-            // physics.add.overlap(player, stars, collectStar1, null, this);
-
-            // Detecção de colisão e disparo de evento: espinhos
-            // physics.add.collider(player, spikes, hitBomb1, null, this);
 
             // Câmera seguindo o personagem 1
             cameras.main.startFollow(player);
@@ -463,24 +366,12 @@ cena1.create = function () {
             cima.on("pointerover", () => {
                 cima.setFrame(1);
                 if (player2.body.blocked.down) {
-                    player2.setVelocityY(-330);
+                    player2.setVelocityY(-260);
                 }
             });
             cima.on("pointerout", () => {
                 cima.setFrame(0);
             });
-
-            // Personagens colidem com os limites da cena
-            // player2.setCollideWorldBounds(true);
-
-            // Detecção de colisão: plataformas
-            // physics.add.collider(player2, blocos, null, null, this);
-
-            // Detecção de colisão e disparo de evento: gemas
-            // physics.add.overlap(player2, stars, collectStar2, null, this);
-
-            // Detecção de colisão e disparo de evento: espinhos
-            // physics.add.collider(player2, spikes, hitBomb2, null, null, this);
 
             // Câmera seguindo o personagem 2
             cameras.main.startFollow(player2);
@@ -575,46 +466,6 @@ cena1.create = function () {
     });
 };
 
-// Pontuação do jogador 1
-// function collectStar1(player, star) {
-// star.disableBody(true, true);
-
-// score += 10;
-// scoreText.setText("Pontuação J1: " + score);
-// Ao coletar a gema, toca o efeito sonoro
-// audiogema.play();
-// }
-
-// Pontuação do jogador 2
-// function collectStar2(player2, star) {
-// star.disableBody(true, true);
-
-// score += 10;
-// scoreText2.setText("Pontuação J2: " + score);
-// Ao coletar a gema, toca o efeito sonoro
-// audiogema.play();
-// }
-
-// Vida do jogador 1
-// function hitBomb1(player, spikes) {
-// spikes.disableBody(false, false);
-
-// lives -= 1;
-// livesText.setText("Vidas J1: " + lives);
-// Ao colidir com o espinho, toca o efeito sonoro
-// audioespinho.play();
-// }
-
-// Vida do jogador 2
-// function hitBomb2(player2, spikes) {
-// spikes.disableBody(false, false);
-
-// lives -= 1;
-// livesText2.setText("Vidas J2: " + lives);
-// Ao colidir com o espinho, toca o efeito sonoro
-//  audioespinho.play();
-// }
-
 cena1.update = function () {
     if (jogador === 1 && doisJogadores === true) {
         this.socket.emit("estadoDoJogador", {
@@ -643,32 +494,16 @@ cena1.update = function () {
     }
 };
 
-// // Se o numero de vidas chegar a zero, inicia a cena 2
-// if (lives <= 0) {
-//   player.setTint(0xff0000);
-//   this.scene.start(cena2);
-//   lives = 3;
-//   score = 0;
-//   tema.pause(temaConfig);
-// }
-
 function countdown() {
     // O laser sobre 30 pixels no eixo Y
-    //laser.y -= 30;
+    laser.y -= 20;
 
     // Reduz o contador em 1 segundo
     timer -= 1;
-    // timerText.setText(timer);
 
     // Adiciona o tempo de vida em 1 segundo
     life += 1;
     lifeText.setText(life);
-
-    // Se o contador chegar a zero, inicia a cena 2
-    //if (timer === 0) {
-    //tema.stop();
-    //this.scene.start(cena2);
-    //}
 }
 
 function hitEstrela(player, estrela) {
